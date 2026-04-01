@@ -3,69 +3,60 @@
 
   <xacro:include filename="$(find arctos_description)/urdf/joint_link.xacro" />
 
-  <!-- Arctos Simple Pinch Gripper -->
   <xacro:arctos_link
     name="Gripper_1"
-    origin_xyz="0.0 0.323 -0.5685" origin_rpy="0 0 0"
+    origin_xyz="-0.000193 0.319847 -0.570316" origin_rpy="0 0 0"
     material_name="white"
-    inertia_origin_xyz="-0.001 -0.0211 0.0" inertia_origin_rpy="0 0 0"
-    mass="0.2"
-    ixx="1e-4" iyy="1e-4" izz="1e-4" ixy="-0.0" iyz="0.0" ixz="0.0"
+    inertia_origin_xyz="0.0036112727264542635 -0.014760653808445767 -0.00103677815369696"
+    inertia_origin_rpy="0 0 0"
+    mass="0.5810486809925093"
+    ixx="0.000385" iyy="0.000495" izz="0.000263" ixy="1e-05" iyz="-2e-06" ixz="3e-06"
   />
 
   <xacro:arctos_link
     name="Left_jaw_1"
-    origin_xyz="0.0 0.323 -0.5685" origin_rpy="0 0 0"
+    origin_xyz="-0.007934 0.359845 -0.599867" origin_rpy="0 0 0"
     material_name="white"
-    inertia_origin_xyz="-0.0 -0.0211 0.0" inertia_origin_rpy="0 0 0"
-    mass="0.01"
-    ixx="1e-6" iyy="1e-6" izz="1e-6" ixy="-0.0" iyz="0.0" ixz="0.0"
+    inertia_origin_xyz="-0.011142702480351952 -0.009692440309284511 -0.009385792627785827"
+    inertia_origin_rpy="0 0 0"
+    mass="0.07369602565859415"
+    ixx="1.1e-05" iyy="6e-06" izz="1.4e-05" ixy="2e-06" iyz="-0.0" ixz="-0.0"
   />
 
   <xacro:arctos_link
     name="Right_jaw_1"
-    origin_xyz="0.0 0.323 -0.5685" origin_rpy="0 0 0"
+    origin_xyz="-0.007934 0.359845 -0.539867" origin_rpy="0 0 0"
     material_name="white"
-    inertia_origin_xyz="-0.001 -0.0211 0.0" inertia_origin_rpy="0 0 0"
-    mass="0.01"
-    ixx="1e-6" iyy="1e-6" izz="1e-6" ixy="-0.0" iyz="0.0" ixz="0.0"
+    inertia_origin_xyz="-0.008289104952972526 -0.009768535307719373 0.009395511902715814"
+    inertia_origin_rpy="0 0 0"
+    mass="0.07312902168719511"
+    ixx="1.1e-05" iyy="6e-06" izz="1.4e-05" ixy="-1e-06" iyz="0.0" ixz="-1e-06"
   />
 
-  <!-- Fixed gripper joint, no axis needed -->
   <xacro:arctos_joint
     name="Gripper_joint" type="fixed"
     parent="Link_6_1" child="Gripper_1"
-    origin_xyz="0.0 -0.0 0.0" origin_rpy="0 0 0"
+    origin_xyz="0.0 -0.006085 0.0" origin_rpy="0 0 0"
     limit_u="0.0" limit_l="0.0" limit_e="0.0" limit_v="0.0"
   />
 
-  <!-- Left jaw joint, prismatic with axis directly defined -->
-  <xacro:arctos_joint
-    name="Left_jaw_joint"
-    type="prismatic"
-    parent="Gripper_1"
-    child="Left_jaw_1"
-    origin_xyz="0.0 0.0 0.0"
-    origin_rpy="0 0 0"
-    axis_xyz="0 0 1"
-    limit_u="0.015"
-    limit_l="0.0"
-    limit_e="1.0"
-    limit_v="10.0"
-  />
+  <joint name="Left_jaw_joint" type="prismatic">
+    <parent link="Gripper_1" />
+    <child link="Left_jaw_1" />
+    <origin xyz="0.007741 -0.039998 0.029551" rpy="0 0 0" />
+    <axis xyz="0 0 -1" />
+    <limit upper="0.015" lower="0.0" effort="100.0" velocity="100.0" />
+    <dynamics damping="0.0" friction="0.0" />
+  </joint>
 
-  <xacro:arctos_joint
-    name="Right_jaw_joint"
-    type="prismatic"
-    parent="Gripper_1"
-    child="Right_jaw_1"
-    origin_xyz="0.0 0.0 0.0"
-    origin_rpy="0 0 0"
-    axis_xyz="0 0 1"  
-    limit_u="0.015"
-    limit_l="0.0"
-    limit_e="1.0"
-    limit_v="10.0"
-  />
+  <joint name="Right_jaw_joint" type="prismatic">
+    <parent link="Gripper_1" />
+    <child link="Right_jaw_1" />
+    <origin xyz="0.007741 -0.039998 -0.030449" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <limit upper="0.015" lower="0.0" effort="100.0" velocity="100.0" />
+    <mimic joint="Left_jaw_joint" multiplier="1.0" offset="0.0" />
+    <dynamics damping="0.0" friction="0.0" />
+  </joint>
 
 </robot>

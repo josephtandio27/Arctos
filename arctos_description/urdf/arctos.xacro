@@ -14,7 +14,10 @@
   <xacro:include filename="$(find arctos_description)/urdf/arctos.ros2_control.xacro" />
 
 
-  <xacro:arctos_ros2_control name="arctos_hardware_interface" use_gazebo="${use_gazebo}"
-    port_name="${port_name}" baud_rate="${baud_rate}" feed_rate="${feed_rate}"
-    abs_motion="${abs_motion}" />
+  <xacro:arctos_ros2_control name="arctos_hardware_interface" use_gazebo="$(arg use_gazebo)"
+    port_name="$(arg port_name)" baud_rate="$(arg baud_rate)" feed_rate="$(arg feed_rate)"
+    abs_motion="$(arg abs_motion)" />
+
+  <xacro:include filename="gazebo_sim_ros2control.xacro" />
+  <xacro:arctos_gazebo_sim use_gazebo="$(arg use_gazebo)" />
 </robot>

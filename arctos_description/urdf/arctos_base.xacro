@@ -2,7 +2,7 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:include filename="$(find arctos_description)/urdf/joint_link.xacro" />
-    <!-- Define all links -->
+    
     <link name="world" />
 
     <xacro:arctos_link
@@ -11,122 +11,129 @@
         material_name="white"
         inertia_origin_xyz="0.0009375030874740357 0.047087016508753216 0.06663230338123677"
         inertia_origin_rpy="0 0 0"
-        mass="2.3"
-        ixx="0.0143" iyy="0.0055" izz="0.015" ixy="0.0" iyz="0.0" ixz="0.0"
+        mass="7.598577592821282"
+        ixx="0.063328" ixy="-0.000434" ixz="0.000108" 
+        iyy="0.03095" iyz="0.001366" izz="0.072371"
     />
 
     <xacro:arctos_link
         name="Link_1_1"
-        origin_xyz="-0.0 -0.000 -0.1126" origin_rpy="0 0 0"
+        origin_xyz="0.0 -0.000529 -0.111" origin_rpy="0 0 0"
         material_name="white"
-        inertia_origin_xyz="-0.0088 -0.0005 ${0.2116-0.1126}" inertia_origin_rpy="0 0 0"
-        mass="3.0396"
-        ixx="0.0143" iyy="${0.0168*0.96536}" izz="${0.0084*0.96082}" ixy="${0.0143*-0.03956}"
-        ixz="${0.0143*-0.11546}" iyz="${0.0168*0.25198}"
+        inertia_origin_xyz="0.0022188890353287776 -0.004863444449475237 0.08546835509394825" 
+        inertia_origin_rpy="0 0 0"
+        mass="10.394711633971145"
+        ixx="0.061139" ixy="0.00017" ixz="-0.00148" 
+        iyy="0.073854" iyz="0.003835" izz="0.05669"
     />
 
     <xacro:arctos_link
         name="Link_2_1"
-        origin_xyz="0.0 0.020356 -0.2876" origin_rpy="0 0 0"
+        origin_xyz="0.05713 0.020356 -0.289378" origin_rpy="0 0 0"
         material_name="white"
-        inertia_origin_xyz="0.0042 ${-0.0098+0.020356} ${0.4174-0.2876}" inertia_origin_rpy="0 0 0"
-        mass="2.527"
-        ixx="${0.0282*0.99851}" iyy="${0.03*0.99865}" izz="${0.0063*0.99982}" ixy="${0.0282*0.05146}"
-        iyz="${0.03*-0.00591}" ixz="${0.0282*-0.01813}"
+        inertia_origin_xyz="0.055314283466519745 0.010843565259072822 0.11412354328486207" 
+        inertia_origin_rpy="0 0 0"
+        mass="11.558090086674309"
+        ixx="0.128567" ixy="3e-06" ixz="0.001539" 
+        iyy="0.14463" iyz="-0.003293" izz="0.044463"
     />
 
     <xacro:arctos_link
         name="Link_3_1"
-        origin_xyz="-0.0 0.019045 -0.54864" origin_rpy="${-pi/2} 0 0"
+        origin_xyz="-0.043 0.019045 -0.550385" origin_rpy="0 0 0"
         material_name="white"
-        inertia_origin_xyz="0.00158 -0.053 0.009" inertia_origin_rpy="0 0 0"
-        mass="0.87"
-        ixx="${0.0028*0.99944}" iyy="${0.0011*0.98426}" izz="${0.0027*0.98428}" ixy="${0.0028*-0.02203}"
-        iyz="${0.001*-0.17481}" ixz="${0.0028*0.02507}"
+        inertia_origin_xyz="-0.04178369242643258 -0.03913025368943244 0.01221763827191602" 
+        inertia_origin_rpy="0 0 0"
+        mass="3.601405589552794"
+        ixx="0.012497" ixy="-3.6e-05" ixz="-8.1e-05" 
+        iyy="0.006916" iyz="0.001536" izz="0.011789"
     />
 
     <xacro:arctos_link
         name="Link_4_1"
-        origin_xyz="0.0 0.1578 -0.5704" origin_rpy="0 0 0"
+        origin_xyz="-1e-06 0.15874 -0.57209" origin_rpy="0 0 0"
         material_name="white"
-        inertia_origin_xyz="0.0 -0.0535 -0.001733" inertia_origin_rpy="0 0 0"
-        mass="1.006"
-        ixx="${0.0021*0.99726}" iyy="${0.0024*0.99801}" izz="${0.0032*0.99925}" ixy="${0.0021*-0.6305}"
-        iyz="${0.0024*0.00082}" ixz="${0.0021*0.03862}"
+        inertia_origin_xyz="0.00021104999825562586 -0.06028834880207104 -0.0005408226217131773" 
+        inertia_origin_rpy="0 0 0"
+        mass="3.7852887653107565"
+        ixx="0.011624" ixy="-9e-06" ixz="4e-06" 
+        iyy="0.011491" iyz="-7.1e-05" izz="0.017363"
     />
 
     <xacro:arctos_link
         name="Link_5_1"
-        origin_xyz="0.0 0.2832 -0.56856" origin_rpy="0 0 0"
+        origin_xyz="0.039011 0.279927 -0.570316" origin_rpy="0 0 0"
         material_name="white"
-        inertia_origin_xyz="-0.0007 -0.0142 -0.0008" inertia_origin_rpy="0 0 0"
-        mass="0.3344"
-        ixx="0.0002" iyy="0.0005" izz="0.0005" ixy="0.0" iyz="0.0" ixz="0.0"
+        inertia_origin_xyz="0.0397291414278933 -0.012662394123331089 0.0007929187272999183" 
+        inertia_origin_rpy="0 0 0"
+        mass="0.8319811655030993"
+        ixx="0.000732" ixy="-1.2e-05" ixz="5e-06" 
+        iyy="0.000958" iyz="-5e-06" izz="0.000907"
     />
 
     <xacro:arctos_link
         name="Link_6_1"
-        origin_xyz="0.0 0.323 -0.5685" origin_rpy="0 0 0"
+        origin_xyz="-0.000193 0.313762 -0.570316" origin_rpy="0 0 0"
         material_name="white"
-        inertia_origin_xyz="-0.0 -0.0 0.0" inertia_origin_rpy="0.0 0.0 0.0"
-        mass="1e-3"
-        ixx="1e-3" iyy="1e-3" izz="1e-3" ixy="-0.0" iyz="0.0" ixz="0.0"
+        inertia_origin_xyz="6.567e-08 -0.00304 -3.032e-07" 
+        inertia_origin_rpy="0 0 0"
+        mass="0.10343478090890781"
+        ixx="5.2e-05" ixy="-0.0" ixz="0.0" 
+        iyy="0.000103" iyz="0.0" izz="5.2e-05"
     />
 
-    <!-- Define all joints -->
     <joint name="base_joint" type="fixed">
         <parent link="world" />
         <child link="base_link" />
         <origin xyz="0 0 0" rpy="0 0 0" />
-        <axis xyz="0 0 1" />
     </joint>
 
     <xacro:arctos_joint
         name="X_joint" type="continuous"
         parent="base_link" child="Link_1_1"
-        origin_xyz="0.0 0.0 0.1126" origin_rpy="0 0 0"
-        axis_xyz="-0.0 0.0 1.0"
-        limit_u="${pi}" limit_l="${-pi}" limit_e="24.3" limit_v="15.0"
+        origin_xyz="0.0 0.000529 0.111" origin_rpy="0 0 0"
+        axis_xyz="0 0 1"
+        limit_u="${2*pi}" limit_l="${-2*pi}" limit_e="100.0" limit_v="100.0"
     />
 
     <xacro:arctos_joint
         name="Y_joint" type="continuous"
         parent="Link_1_1" child="Link_2_1"
-        origin_xyz="0.0 -0.020356 ${0.2876-0.1126}" origin_rpy="0 0 0"
-        axis_xyz="1.0 -0.0 -0.0"
-        limit_u="2.18" limit_l="-0.96" limit_e="270.0" limit_v="1.4"
+        origin_xyz="-0.05713 -0.020885 0.178378" origin_rpy="0 0 0"
+        axis_xyz="1 0 0"
+        limit_u="${2*pi}" limit_l="${-2*pi}" limit_e="100.0" limit_v="100.0"
     />
 
     <xacro:arctos_joint
         name="Z_joint" type="continuous"
         parent="Link_2_1" child="Link_3_1"
-        origin_xyz="0.0 0.001365 0.261035" origin_rpy="0 0 0"
-        axis_xyz="1.0 -0.0 0.0"
-        limit_u="${70/180*pi}" limit_l="${-pi/2}" limit_e="97.0" limit_v="1.4"
+        origin_xyz="0.10013 0.001311 0.261007" origin_rpy="0 0 0"
+        axis_xyz="-1 0 0"
+        limit_u="${pi}" limit_l="${-pi}" limit_e="100.0" limit_v="100.0"
     />
 
     <xacro:arctos_joint
         name="A_joint" type="continuous"
         parent="Link_3_1" child="Link_4_1"
-        origin_xyz="0 -0.13881 0.0217651" origin_rpy="0 0 0"
-        axis_xyz="-0.0 1.0 -0.0"
-        limit_u="${pi}" limit_l="${-pi}" limit_e="22.0" limit_v="4.4"
+        origin_xyz="-0.042999 -0.139695 0.021705" origin_rpy="0 0 0"
+        axis_xyz="0 1 0"
+        limit_u="${2*pi}" limit_l="${-2*pi}" limit_e="100.0" limit_v="100.0"
     />
 
     <xacro:arctos_joint
         name="B_joint" type="continuous"
         parent="Link_4_1" child="Link_5_1"
-        origin_xyz="0.0 -0.12543 -0.00184" origin_rpy="0 0 0"
-        axis_xyz="-1.0 -0.0 0.0"
-        limit_u="1.55" limit_l="-1.55" limit_e="16.0" limit_v="3.0"
+        origin_xyz="-0.039012 -0.121187 -0.001774" origin_rpy="0 0 0"
+        axis_xyz="-1 0 0"
+        limit_u="${2*pi}" limit_l="${-2*pi}" limit_e="100.0" limit_v="100.0"
     />
 
     <xacro:arctos_joint
         name="C_joint" type="continuous"
         parent="Link_5_1" child="Link_6_1"
-        origin_xyz="0.0 -0.0398 0.0" origin_rpy="0 0 0"
-        axis_xyz="-0.0 1.0 -0.0"
-        limit_u="${pi}" limit_l="${-pi}" limit_e="16.0" limit_v="3.0"
+        origin_xyz="0.039204 -0.033835 0.0" origin_rpy="0 0 0"
+        axis_xyz="0 1 0"
+        limit_u="${2*pi}" limit_l="${-2*pi}" limit_e="100.0" limit_v="100.0"
     />
 
 </robot>
