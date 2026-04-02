@@ -11,7 +11,7 @@
           <plugin>gz_ros2_control/GazeboSimSystem</plugin>
         </xacro:if>
         <xacro:unless value="${use_gazebo}">
-          <plugin>arctos_hardware_interface/ArctosHardwareInterface</plugin>
+          <plugin>arctos_control/ArctosSerialHardwareInterface</plugin>
         </xacro:unless>
         <param name="serial_port">${port_name}</param>
         <param name="baud_rate">${baud_rate}</param>
@@ -89,14 +89,14 @@
         </state_interface>
       </joint>
 
-      <joint name="Right_jaw_joint">
+      <!-- <joint name="Right_jaw_joint">
         <param name="mimic">Left_jaw_joint</param>
         <param name="multiplier">1.0</param>
         <param name="offset">0.0</param>
         <state_interface name="position">
           <param name="initial_value">0.0</param>
         </state_interface>
-      </joint>
+      </joint> -->
 
     </ros2_control>
 

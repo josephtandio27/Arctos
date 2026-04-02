@@ -6,7 +6,7 @@
 namespace arctos_control
 {
 
-    CallbackReturn ArctosSerialHardwareInterface::on_init(const hardware_interface::HardwareComponentInterfaceParams& params)
+    CallbackReturn ArctosSerialHardwareInterface::on_init(const hardware_interface::HardwareComponentInterfaceParams &params)
     {
         if (hardware_interface::SystemInterface::on_init(params) != CallbackReturn::SUCCESS)
         {
@@ -24,7 +24,7 @@ namespace arctos_control
                 RCLCPP_INFO(node_->get_logger(), "Feed rate updated to: %d", this->feed_rate_.load());
             });
 
-        // Initialize vectors for 6 joints
+        // Initialize vectors for 7 joints
         hw_commands_.resize(params.hardware_info.joints.size(), 0.0);
         hw_states_.resize(params.hardware_info.joints.size(), 0.0);
 
@@ -71,15 +71,15 @@ namespace arctos_control
             return CallbackReturn::ERROR;
         }
 
-        // reset values always when configuring hardware
-        for (const auto &[name, descr] : joint_state_interfaces_)
-        {
-            set_state(name, 0.0);
-        }
-        for (const auto &[name, descr] : joint_command_interfaces_)
-        {
-            set_command(name, 0.0);
-        }
+        // // reset values always when configuring hardware
+        // for (const auto &[name, descr] : joint_state_interfaces_)
+        // {
+        //     set_state(name, 0.0);
+        // }
+        // for (const auto &[name, descr] : joint_command_interfaces_)
+        // {
+        //     set_command(name, 0.0);
+        // }
 
         return CallbackReturn::SUCCESS;
     }
@@ -216,6 +216,8 @@ namespace arctos_control
         std::vector<hardware_interface::StateInterface> state_interfaces;
         for (size_t i = 0; i < info_.joints.size(); i++)
         {
+            // Add a log to see exactly what is happening during the crash
+            RCLCPP_INFO(rclcpp::get_logger("ArctosHardware"), "Exporting state interface for: %s", info_.joints[i].name.c_str());
             state_interfaces.emplace_back(hardware_interface::StateInterface(
                 info_.joints[i].name, hardware_interface::HW_IF_POSITION, &hw_states_[i]));
         }
@@ -246,14 +248,16 @@ namespace arctos_control
     hardware_interface::return_type ArctosSerialHardwareInterface::write(const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
     {
         // Process ROS callback to update feed_rate_
-        if (node_) rclcpp::spin_some(node_);
+        if (node_)
+            rclcpp::spin_some(node_);
 
         // Allow boost to process the 'ok' callbacks
         io_service_.poll();
         io_service_.reset();
 
         // Check if joints actually moved enough to justify a new G-code command
-        if (last_sent_commands_.size() != hw_commands_.size()) {
+        if (last_sent_commands_.size() != hw_commands_.size())
+        {
             return hardware_interface::return_type::OK;
         }
         bool should_move = false;

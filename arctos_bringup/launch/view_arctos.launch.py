@@ -10,8 +10,8 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description():
     # Declare arguments
     declared_arguments = []
-    declared_arguments.append(DeclareLaunchArgument("use_gazebo", default_value="true"))
-    declared_arguments.append(DeclareLaunchArgument("port_name", default_value="/dev/ttyUSB0"))
+    declared_arguments.append(DeclareLaunchArgument("use_gazebo", default_value="false"))
+    declared_arguments.append(DeclareLaunchArgument("port_name", default_value="/dev/ttyACM0"))
     declared_arguments.append(DeclareLaunchArgument("baud_rate", default_value="115200"))
     declared_arguments.append(DeclareLaunchArgument("feed_rate", default_value="800"))
     declared_arguments.append(DeclareLaunchArgument("abs_motion", default_value="true"))
@@ -150,11 +150,26 @@ def generate_launch_description():
         ros_gz_bridge,
         delay_broadcaster_after_spawn,
         # Hardware path (Broadcaster starts immediately)
+        # 1. Joint State Broadcaster (Always needed)
         Node(
             package="controller_manager",
             executable="spawner",
             arguments=["joint_state_broadcaster"],
             condition=UnlessCondition(use_gazebo)
+        ),
+
+        # 2. Arm Controller
+        Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=["joint_trajectory_controller"],
+        ),
+
+        # 3. Gripper Controller
+        Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=["gripper_action_controller"],
         ),
         # Shared Path
         delay_robot_controller_after_broadcaster,

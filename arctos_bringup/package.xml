@@ -13,7 +13,7 @@
   <test_depend>ament_lint_common</test_depend>
   <exec_depend>arctos_description</exec_depend>
   <exec_depend>arctos_hardware_interface</exec_depend> 
-  <exec_depend>arctos_moveit_config</exec_depend>
+  <!-- <exec_depend>arctos_moveit_config</exec_depend> -->
   <export>
     <build_type>ament_cmake</build_type>
   </export>
