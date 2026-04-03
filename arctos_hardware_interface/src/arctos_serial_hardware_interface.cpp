@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <sstream>
 #include <cmath>
+#include <algorithm> // for std::transform
 
 namespace arctos_control
 {
@@ -15,18 +16,10 @@ namespace arctos_control
 
         auto logger = rclcpp::get_logger("ArctosHardware");
         node_ = std::make_shared<rclcpp::Node>(params.hardware_info.name + "_node");
-        feed_rate_sub_ = node_->create_subscription<std_msgs::msg::Int32>(
-            "set_feed_rate",
-            rclcpp::SensorDataQoS(),
-            [this](const std_msgs::msg::Int32::SharedPtr msg)
-            {
-                this->feed_rate_.store(msg->data);
-                RCLCPP_INFO(node_->get_logger(), "Feed rate updated to: %d", this->feed_rate_.load());
-            });
-
-        // Initialize vectors for 7 joints
+        // Initialize vectors for 6 joints + 1 gripper
         hw_commands_.resize(params.hardware_info.joints.size(), 0.0);
         hw_states_.resize(params.hardware_info.joints.size(), 0.0);
+        last_sent_commands_ = hw_commands_;
 
         // Get the port name from the URDF parameters
         port_name_ = params.hardware_info.hardware_parameters.at("serial_port");
@@ -62,24 +55,35 @@ namespace arctos_control
         {
             // Allocate the object memory
             serial_port_ = std::make_unique<boost::asio::serial_port>(io_service_);
+            serial_port_->open(port_name_);
+            serial_port_->set_option(boost::asio::serial_port_base::baud_rate(port_baud_rate_));
 
-            // We don't open it yet, just prepare it.
-            RCLCPP_INFO(rclcpp::get_logger("ArctosHardware"), "Serial port object created.");
+            // Start the IO service and ROS executor in a background thread
+            // This ensures subscribers and "ok" listeners work even when INACTIVE
+            if (service_thread_.joinable())
+                return CallbackReturn::SUCCESS; // Prevent double start
+
+            executor_.add_node(node_);
+            thread_running_ = true;
+            service_thread_ = std::thread([this]() {
+                // This loop runs for the lifetime of the hardware interface
+                while (rclcpp::ok() && thread_running_) {
+                    io_service_.poll();
+                    io_service_.reset();
+                    executor_.spin_some();
+                    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                } });
+
+            // Initialize Subscribers here
+            setup_subscribers();
+
+            RCLCPP_INFO(node_->get_logger(), "Serial port opened and background thread started.");
         }
         catch (const std::exception &e)
         {
+            RCLCPP_ERROR(node_->get_logger(), "Configure failed: %s", e.what());
             return CallbackReturn::ERROR;
         }
-
-        // // reset values always when configuring hardware
-        // for (const auto &[name, descr] : joint_state_interfaces_)
-        // {
-        //     set_state(name, 0.0);
-        // }
-        // for (const auto &[name, descr] : joint_command_interfaces_)
-        // {
-        //     set_command(name, 0.0);
-        // }
 
         return CallbackReturn::SUCCESS;
     }
@@ -88,13 +92,6 @@ namespace arctos_control
     {
         try
         {
-            // Now we actually try to talk to the hardware
-            serial_port_->open(port_name_); // Or your udev symlink
-            serial_port_->set_option(boost::asio::serial_port_base::baud_rate(port_baud_rate_));
-
-            // Initialize/Reset the movement tracker to the current commands
-            last_sent_commands_.assign(hw_commands_.size(), 0.0);
-
             // Start your "ok" token listener
             arduino_ready_.store(true);
             async_read_ok();
@@ -111,37 +108,31 @@ namespace arctos_control
 
     CallbackReturn ArctosSerialHardwareInterface::on_deactivate(const rclcpp_lifecycle::State & /*previous_state*/)
     {
-        try
-        {
-            arduino_ready_ = false;
-            if (serial_port_->is_open())
-            {
-                serial_port_->close();
-            }
-            RCLCPP_INFO(rclcpp::get_logger("ArctosHardware"), "Arctos Disconnected.");
-        }
-        catch (const std::exception &e)
-        {
-            RCLCPP_ERROR(rclcpp::get_logger("ArctosHardware"), "Deactivation failed: %s", e.what());
-            return CallbackReturn::ERROR;
-        }
+        arduino_ready_ = false; // Stop the write() loop from sending G1
+        RCLCPP_INFO(node_->get_logger(), "Movement disabled, but serial remains open for config.");
         return CallbackReturn::SUCCESS;
     }
-
+    
     CallbackReturn ArctosSerialHardwareInterface::on_cleanup(const rclcpp_lifecycle::State & /*previous_state*/)
     {
         RCLCPP_INFO(rclcpp::get_logger("ArctosHardware"), "Cleaning up Arctos serial resources...");
-
+        
         try
         {
-            // 1. Stop the Boost IO service
+            thread_running_ = false;
+            // Stop the Boost IO service
             // This cancels any pending async_read_until ("ok" listener)
             if (!io_service_.stopped())
             {
                 io_service_.stop();
             }
+            if (service_thread_.joinable())
+            {
+                // You might need a flag to stop the while() loop in the thread
+                service_thread_.join();
+            }
 
-            // 2. Close and destroy the serial port object
+            // Close and destroy the serial port object
             if (serial_port_)
             {
                 if (serial_port_->is_open())
@@ -158,18 +149,6 @@ namespace arctos_control
         {
             RCLCPP_ERROR(rclcpp::get_logger("ArctosHardware"), "Error during cleanup: %s", e.what());
             return CallbackReturn::ERROR;
-        }
-
-        // 3. Optional: Clear the internal maps/vectors if you want a true "fresh start"
-        // Though ros2_control usually handles the interface lifecycle,
-        // zeroing them out again matches your on_configure logic.
-        for (auto const &[name, descr] : joint_state_interfaces_)
-        {
-            set_state(name, 0.0);
-        }
-        for (auto const &[name, descr] : joint_command_interfaces_)
-        {
-            set_command(name, 0.0);
         }
 
         return CallbackReturn::SUCCESS;
@@ -247,14 +226,6 @@ namespace arctos_control
 
     hardware_interface::return_type ArctosSerialHardwareInterface::write(const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
     {
-        // Process ROS callback to update feed_rate_
-        if (node_)
-            rclcpp::spin_some(node_);
-
-        // Allow boost to process the 'ok' callbacks
-        io_service_.poll();
-        io_service_.reset();
-
         // Check if joints actually moved enough to justify a new G-code command
         if (last_sent_commands_.size() != hw_commands_.size())
         {
@@ -299,6 +270,7 @@ namespace arctos_control
             arduino_ready_ = false;
 
             // 4. Send via Boost.Asio
+            std::lock_guard<std::mutex> lock(serial_mutex_);
             boost::asio::async_write(*serial_port_, boost::asio::buffer(gcode_cmd),
                                      [this](const boost::system::error_code &ec, std::size_t /*bytes_transferred*/)
                                      {
@@ -336,6 +308,77 @@ namespace arctos_control
                                               async_read_ok(); // Keep listening
                                           }
                                       });
+    }
+
+    void ArctosSerialHardwareInterface::setup_subscribers()
+    {
+        // Set the feed rate via subscriber: 
+        // ros2 topic pub --once /set_feed_rate std_msgs/msg/Int32 "{data: 1200}"
+        feed_rate_sub_ = node_->create_subscription<std_msgs::msg::Int32>(
+        "set_feed_rate",
+        rclcpp::SensorDataQoS(),
+        [this](const std_msgs::msg::Int32::SharedPtr msg) {
+            this->feed_rate_.store(msg->data);
+            RCLCPP_INFO(node_->get_logger(), "Feed rate updated to: %d", this->feed_rate_.load());
+        });
+
+        // Send Raw GRBL Commands ($xx=val and any G-code)):
+        // ros2 topic pub --once /send_grbl_command std_msgs/msg/String "{data: '$110=500'}"
+        grbl_config_sub_ = node_->create_subscription<std_msgs::msg::String>(
+            "send_grbl_command", 10,
+            [this](const std_msgs::msg::String::SharedPtr msg)
+            {
+                std::string cmd = msg->data;
+                std::string upper_cmd = cmd;
+                std::transform(upper_cmd.begin(), upper_cmd.end(), upper_cmd.begin(), ::toupper);
+
+                if (upper_cmd.find("G92") != std::string::npos)
+                {
+                    std::stringstream ss(upper_cmd);
+                    std::string token;
+                    std::map<char, int> axis_map = {{'X', 0}, {'Y', 1}, {'Z', 2}, {'A', 3}, {'B', 4}, {'C', 5}};
+
+                    while (ss >> token)
+                    {
+                        char axis = token[0];
+                        // Check if this token is an axis letter (e.g., "X")
+                        if (axis_map.count(axis))
+                        {
+                            double degrees;
+                            // Handle "X0.0" vs "X 0.0"
+                            if (token.size() > 1)
+                            {
+                                // Value is attached: "X0.5"
+                                degrees = std::stod(token.substr(1));
+                            }
+                            else
+                            {
+                                // Value is next token: "X 0.5"
+                                if (ss >> degrees)
+                                { /* success */
+                                }
+                            }
+
+                            int idx = axis_map[axis];
+                            // CONVERT DEGREES (Hardware) -> RADIANS (ROS)
+                            double radians = degrees * (M_PI / 180.0);
+
+                            hw_states_[idx] = radians;
+                            hw_commands_[idx] = radians;
+                            last_sent_commands_[idx] = radians;
+                        }
+                    }
+                }
+
+                // Send to serial port
+                std::lock_guard<std::mutex> lock(serial_mutex_);
+                if (serial_port_ && serial_port_->is_open())
+                {
+                    std::string final_cmd = cmd + "\n";
+                    boost::asio::write(*serial_port_, boost::asio::buffer(final_cmd));
+                    RCLCPP_INFO(node_->get_logger(), "Serial Sent: %s", cmd.c_str());
+                }
+            });
     }
 } // namespace arctos_control
 

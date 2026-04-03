@@ -1,6 +1,9 @@
 #ifndef ARCTOS_SERIAL_HARDWARE_INTERFACE_HPP_
 #define ARCTOS_SERIAL_HARDWARE_INTERFACE_HPP_
 
+#include <thread>
+#include <mutex>
+#include <rclcpp/executors.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <vector>
 #include <string>
@@ -14,6 +17,8 @@
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "hardware_interface/hardware_component_interface.hpp"
 #include "std_msgs/msg/int32.hpp"
+#include "std_msgs/msg/float32_multi_array.hpp"
+#include <std_msgs/msg/string.hpp>
 
 using hardware_interface::return_type;
 
@@ -40,8 +45,13 @@ namespace arctos_control
 
     private:
         // Node for live parameters update
+        std::atomic<bool> thread_running_{false};
+        std::thread service_thread_;
+        rclcpp::executors::SingleThreadedExecutor executor_;
+        std::mutex serial_mutex_;
         std::shared_ptr<rclcpp::Node> node_;
         rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr feed_rate_sub_;
+        rclcpp::Subscription<std_msgs::msg::String>::SharedPtr grbl_config_sub_;
 
         // Storage for joint values (ROS works in Radians)
         std::vector<double> hw_commands_;
@@ -63,6 +73,7 @@ namespace arctos_control
         std::atomic<bool> arduino_ready_{true};
 
         void async_read_ok();
+        void setup_subscribers();
     };
 }
 
