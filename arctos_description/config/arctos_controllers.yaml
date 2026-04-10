@@ -47,6 +47,7 @@ arctos_gripper_controller:
       - position
     state_interfaces:
       - position
+      - velocity
     joint: Left_jaw_joint
     action_monitor_rate: 20.0
     goal_tolerance: 0.01

@@ -65,7 +65,8 @@ namespace arctos_control
 
             executor_.add_node(node_);
             thread_running_ = true;
-            service_thread_ = std::thread([this]() {
+            service_thread_ = std::thread([this]()
+                                          {
                 // This loop runs for the lifetime of the hardware interface
                 while (rclcpp::ok() && thread_running_) {
                     io_service_.poll();
@@ -112,11 +113,11 @@ namespace arctos_control
         RCLCPP_INFO(node_->get_logger(), "Movement disabled, but serial remains open for config.");
         return CallbackReturn::SUCCESS;
     }
-    
+
     CallbackReturn ArctosSerialHardwareInterface::on_cleanup(const rclcpp_lifecycle::State & /*previous_state*/)
     {
         RCLCPP_INFO(rclcpp::get_logger("ArctosHardware"), "Cleaning up Arctos serial resources...");
-        
+
         try
         {
             thread_running_ = false;
@@ -199,6 +200,12 @@ namespace arctos_control
             RCLCPP_INFO(rclcpp::get_logger("ArctosHardware"), "Exporting state interface for: %s", info_.joints[i].name.c_str());
             state_interfaces.emplace_back(hardware_interface::StateInterface(
                 info_.joints[i].name, hardware_interface::HW_IF_POSITION, &hw_states_[i]));
+
+            if (info_.joints[i].name == "Left_jaw_joint")
+            {
+                state_interfaces.emplace_back(hardware_interface::StateInterface(
+                    info_.joints[i].name, hardware_interface::HW_IF_VELOCITY, &gripper_velocity_state_));
+            }
         }
         return state_interfaces;
     }
@@ -214,12 +221,19 @@ namespace arctos_control
         return command_interfaces;
     }
 
-    hardware_interface::return_type ArctosSerialHardwareInterface::read(const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
+    hardware_interface::return_type ArctosSerialHardwareInterface::read(const rclcpp::Time & /*time*/, const rclcpp::Duration & period)
     {
+        double dt = period.seconds();
         // OPEN LOOP: Since we have no encoders, we assume the robot reached the command.
         for (uint i = 0; i < hw_states_.size(); i++)
         {
             hw_states_[i] = hw_commands_[i];
+
+            if (info_.joints[i].name == "Left_jaw_joint" && dt > 0.0)
+            {
+                gripper_velocity_state_ = (hw_states_[i] - last_gripper_position_) / dt;
+                last_gripper_position_ = hw_states_[i];
+            }
         }
         return hardware_interface::return_type::OK;
     }
@@ -312,15 +326,16 @@ namespace arctos_control
 
     void ArctosSerialHardwareInterface::setup_subscribers()
     {
-        // Set the feed rate via subscriber: 
+        // Set the feed rate via subscriber:
         // ros2 topic pub --once /set_feed_rate std_msgs/msg/Int32 "{data: 1200}"
         feed_rate_sub_ = node_->create_subscription<std_msgs::msg::Int32>(
-        "set_feed_rate",
-        rclcpp::SensorDataQoS(),
-        [this](const std_msgs::msg::Int32::SharedPtr msg) {
-            this->feed_rate_.store(msg->data);
-            RCLCPP_INFO(node_->get_logger(), "Feed rate updated to: %d", this->feed_rate_.load());
-        });
+            "set_feed_rate",
+            rclcpp::SensorDataQoS(),
+            [this](const std_msgs::msg::Int32::SharedPtr msg)
+            {
+                this->feed_rate_.store(msg->data);
+                RCLCPP_INFO(node_->get_logger(), "Feed rate updated to: %d", this->feed_rate_.load());
+            });
 
         // Send Raw GRBL Commands ($xx=val and any G-code)):
         // ros2 topic pub --once /send_grbl_command std_msgs/msg/String "{data: '$110=500'}"

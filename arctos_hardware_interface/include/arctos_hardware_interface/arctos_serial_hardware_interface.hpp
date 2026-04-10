@@ -57,6 +57,8 @@ namespace arctos_control
         std::vector<double> hw_commands_;
         std::vector<double> hw_states_;
         std::vector<double> last_sent_commands_;
+        double gripper_velocity_state_ = 0.0;
+        double last_gripper_position_ = 0.0;
 
         // Serial communication placeholder
         boost::asio::io_service io_service_;
