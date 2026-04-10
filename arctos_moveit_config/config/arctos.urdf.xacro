@@ -3,7 +3,7 @@
     <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
 
     <!-- Import arctos urdf file -->
-    <xacro:include filename="$(find arctos_description)/urdf/arctos.urdf" />
+    <xacro:include filename="$(find arctos_description)/urdf/arctos.xacro" />
 
     <!-- Import control_xacro -->
     <xacro:include filename="arctos.ros2_control.xacro" />

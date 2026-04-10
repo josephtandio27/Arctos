@@ -28,6 +28,7 @@ arctos_arm_controller:
     state_interfaces:
       - position
     allow_nonzero_velocity_at_trajectory_end: true
+    
 arctos_gripper_controller:
   ros__parameters:
     joint: Left_jaw_joint
