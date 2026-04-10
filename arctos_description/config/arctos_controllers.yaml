@@ -43,6 +43,10 @@ arctos_arm_controller:
 arctos_gripper_controller:
   ros__parameters:
     type: parallel_gripper_action_controller/GripperActionController
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
     joint: Left_jaw_joint
     action_monitor_rate: 20.0
     goal_tolerance: 0.01
