@@ -37,7 +37,7 @@
     name="Gripper_joint" type="fixed"
     parent="Link_6_1" child="Gripper_1"
     origin_xyz="0.0 -0.006085 0.0" origin_rpy="0 0 0"
-    limit_u="0.0" limit_l="0.0" limit_e="0.0" limit_v="0.0"
+    limit_u="0.0" limit_l="0.0" limit_e="0.0" limit_v="0.0" limit_a="0.0"
   />
 
   <joint name="Left_jaw_joint" type="prismatic">
