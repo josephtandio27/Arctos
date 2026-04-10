@@ -94,14 +94,14 @@ def generate_launch_description():
     robot_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_trajectory_controller", "-c", "/controller_manager"],
+        arguments=["arctos_arm_controller", "-c", "/controller_manager"],
         parameters=[{"use_sim_time": use_gazebo}]
     )
 
     gripper_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["gripper_action_controller", "-c", "/controller_manager"],
+        arguments=["arctos_gripper_controller", "-c", "/controller_manager"],
         parameters=[{"use_sim_time": use_gazebo}]
     )
 
@@ -162,14 +162,14 @@ def generate_launch_description():
         Node(
             package="controller_manager",
             executable="spawner",
-            arguments=["joint_trajectory_controller"],
+            arguments=["arctos_arm_controller"],
         ),
 
         # 3. Gripper Controller
         Node(
             package="controller_manager",
             executable="spawner",
-            arguments=["gripper_action_controller"],
+            arguments=["arctos_gripper_controller"],
         ),
         # Shared Path
         delay_robot_controller_after_broadcaster,
