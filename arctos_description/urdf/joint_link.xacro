@@ -34,7 +34,7 @@
       <child link="${child}" />
       <origin xyz="${origin_xyz}" rpy="${origin_rpy}" />
       <axis xyz="${axis_xyz}" />
-      <limit upper="${limit_u}" lower="${limit_l}" effort="${limit_e}" velocity="${limit_v}" />
+      <limit upper="${limit_u}" lower="${limit_l}" effort="${limit_e}" velocity="${limit_v}" acceleration="0.0" />
     </joint>
   </xacro:macro>
 

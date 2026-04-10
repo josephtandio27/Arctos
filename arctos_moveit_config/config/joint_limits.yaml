@@ -7,44 +7,45 @@ default_acceleration_scaling_factor: 0.1
 
 # Specific joint properties can be changed with the keys [max_position, min_position, max_velocity, max_acceleration]
 # Joint limits can be turned off with [has_velocity_limits, has_acceleration_limits]
-joint_limits:
-  A_joint:
-    has_velocity_limits: true
-    max_velocity: 3.14
-    has_acceleration_limits: false
-    max_acceleration: 5
-  B_joint:
-    has_velocity_limits: true
-    max_velocity: 3.14
-    has_acceleration_limits: false
-    max_acceleration: 5
-  C_joint:
-    has_velocity_limits: true
-    max_velocity: 3.14
-    has_acceleration_limits: false
-    max_acceleration: 5
-  Left_jaw_joint:
-    has_velocity_limits: true
-    max_velocity: 3.14
-    has_acceleration_limits: false
-    max_acceleration: 5
-  Right_jaw_joint:
-    has_velocity_limits: true
-    max_velocity: 3.14
-    has_acceleration_limits: false
-    max_acceleration: 5
-  X_joint:
-    has_velocity_limits: true
-    max_velocity: 3.14
-    has_acceleration_limits: false
-    max_acceleration: 5
-  Y_joint:
-    has_velocity_limits: true
-    max_velocity: 3.14
-    has_acceleration_limits: false
-    max_acceleration: 5
-  Z_joint:
-    has_velocity_limits: true
-    max_velocity: 3.14
-    has_acceleration_limits: false
-    max_acceleration: 5
+robot_description_planning:
+  joint_limits:
+    A_joint:
+      has_velocity_limits: true
+      max_velocity: 3.14
+      has_acceleration_limits: false
+      max_acceleration: 5
+    B_joint:
+      has_velocity_limits: true
+      max_velocity: 3.14
+      has_acceleration_limits: false
+      max_acceleration: 5
+    C_joint:
+      has_velocity_limits: true
+      max_velocity: 3.14
+      has_acceleration_limits: false
+      max_acceleration: 5
+    Left_jaw_joint:
+      has_velocity_limits: true
+      max_velocity: 3.14
+      has_acceleration_limits: false
+      max_acceleration: 5
+    Right_jaw_joint:
+      has_velocity_limits: true
+      max_velocity: 3.14
+      has_acceleration_limits: false
+      max_acceleration: 5
+    X_joint:
+      has_velocity_limits: true
+      max_velocity: 3.14
+      has_acceleration_limits: false
+      max_acceleration: 5
+    Y_joint:
+      has_velocity_limits: true
+      max_velocity: 3.14
+      has_acceleration_limits: false
+      max_acceleration: 5
+    Z_joint:
+      has_velocity_limits: true
+      max_velocity: 3.14
+      has_acceleration_limits: false
+      max_acceleration: 5
