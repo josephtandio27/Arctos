@@ -28,13 +28,13 @@
 
   <!-- Define arctos_joint macro with a default value for axis_xyz -->
   <xacro:macro name="arctos_joint"
-    params="name type parent child origin_xyz origin_rpy axis_xyz='0 0 0' limit_u limit_l limit_e limit_v">
+    params="name type parent child origin_xyz origin_rpy axis_xyz='0 0 0' limit_u limit_l limit_e limit_v limit_a">
     <joint name="${name}" type="${type}">
       <parent link="${parent}" />
       <child link="${child}" />
       <origin xyz="${origin_xyz}" rpy="${origin_rpy}" />
       <axis xyz="${axis_xyz}" />
-      <limit upper="${limit_u}" lower="${limit_l}" effort="${limit_e}" velocity="${limit_v}" acceleration="0.0" />
+      <limit upper="${limit_u}" lower="${limit_l}" effort="${limit_e}" velocity="${limit_v}" acceleration="${limit_a}" />
     </joint>
   </xacro:macro>
 

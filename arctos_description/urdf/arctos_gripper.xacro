@@ -45,7 +45,9 @@
     <child link="Left_jaw_1" />
     <origin xyz="0.007741 -0.039998 0.029551" rpy="0 0 0" />
     <axis xyz="0 0 -1" />
-    <limit upper="0.015" lower="0.0" effort="100.0" velocity="100.0" />
+    <limit upper="0.015" lower="0.0" effort="100.0"
+      velocity="${joint_limits['Left_jaw_joint']['max_velocity']}"
+      acceleration="${joint_limits['Left_jaw_joint']['max_acceleration']}" />
     <dynamics damping="0.0" friction="0.0" />
   </joint>
 
@@ -54,7 +56,9 @@
     <child link="Right_jaw_1" />
     <origin xyz="0.007741 -0.039998 -0.030449" rpy="0 0 0" />
     <axis xyz="0 0 1" />
-    <limit upper="0.015" lower="0.0" effort="100.0" velocity="100.0" />
+    <limit upper="0.015" lower="0.0" effort="100.0"
+      velocity="${joint_limits['Right_jaw_joint']['max_velocity']}"
+      acceleration="${joint_limits['Right_jaw_joint']['max_acceleration']}" />
     <mimic joint="Left_jaw_joint" multiplier="1.0" offset="0.0" />
     <dynamics damping="0.0" friction="0.0" />
   </joint>

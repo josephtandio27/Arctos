@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:include filename="$(find arctos_description)/urdf/joint_link.xacro" />
-    
+    <xacro:include filename="$(find arctos_description)/urdf/joint_link.xacro" />
+    <xacro:property name="joint_limits"
+        value="${xacro.load_yaml(joint_limits_file)['joint_limits']}" />
+
     <link name="world" />
 
     <xacro:arctos_link
@@ -12,7 +14,7 @@
         inertia_origin_xyz="0.0009375030874740357 0.047087016508753216 0.06663230338123677"
         inertia_origin_rpy="0 0 0"
         mass="7.598577592821282"
-        ixx="0.063328" ixy="-0.000434" ixz="0.000108" 
+        ixx="0.063328" ixy="-0.000434" ixz="0.000108"
         iyy="0.03095" iyz="0.001366" izz="0.072371"
     />
 
@@ -20,10 +22,10 @@
         name="Link_1_1"
         origin_xyz="0.0 -0.000529 -0.111" origin_rpy="0 0 0"
         material_name="white"
-        inertia_origin_xyz="0.0022188890353287776 -0.004863444449475237 0.08546835509394825" 
+        inertia_origin_xyz="0.0022188890353287776 -0.004863444449475237 0.08546835509394825"
         inertia_origin_rpy="0 0 0"
         mass="10.394711633971145"
-        ixx="0.061139" ixy="0.00017" ixz="-0.00148" 
+        ixx="0.061139" ixy="0.00017" ixz="-0.00148"
         iyy="0.073854" iyz="0.003835" izz="0.05669"
     />
 
@@ -31,10 +33,10 @@
         name="Link_2_1"
         origin_xyz="0.05713 0.020356 -0.289378" origin_rpy="0 0 0"
         material_name="white"
-        inertia_origin_xyz="0.055314283466519745 0.010843565259072822 0.11412354328486207" 
+        inertia_origin_xyz="0.055314283466519745 0.010843565259072822 0.11412354328486207"
         inertia_origin_rpy="0 0 0"
         mass="11.558090086674309"
-        ixx="0.128567" ixy="3e-06" ixz="0.001539" 
+        ixx="0.128567" ixy="3e-06" ixz="0.001539"
         iyy="0.14463" iyz="-0.003293" izz="0.044463"
     />
 
@@ -42,10 +44,10 @@
         name="Link_3_1"
         origin_xyz="-0.043 0.019045 -0.550385" origin_rpy="0 0 0"
         material_name="white"
-        inertia_origin_xyz="-0.04178369242643258 -0.03913025368943244 0.01221763827191602" 
+        inertia_origin_xyz="-0.04178369242643258 -0.03913025368943244 0.01221763827191602"
         inertia_origin_rpy="0 0 0"
         mass="3.601405589552794"
-        ixx="0.012497" ixy="-3.6e-05" ixz="-8.1e-05" 
+        ixx="0.012497" ixy="-3.6e-05" ixz="-8.1e-05"
         iyy="0.006916" iyz="0.001536" izz="0.011789"
     />
 
@@ -53,10 +55,10 @@
         name="Link_4_1"
         origin_xyz="-1e-06 0.15874 -0.57209" origin_rpy="0 0 0"
         material_name="white"
-        inertia_origin_xyz="0.00021104999825562586 -0.06028834880207104 -0.0005408226217131773" 
+        inertia_origin_xyz="0.00021104999825562586 -0.06028834880207104 -0.0005408226217131773"
         inertia_origin_rpy="0 0 0"
         mass="3.7852887653107565"
-        ixx="0.011624" ixy="-9e-06" ixz="4e-06" 
+        ixx="0.011624" ixy="-9e-06" ixz="4e-06"
         iyy="0.011491" iyz="-7.1e-05" izz="0.017363"
     />
 
@@ -64,10 +66,10 @@
         name="Link_5_1"
         origin_xyz="0.039011 0.279927 -0.570316" origin_rpy="0 0 0"
         material_name="white"
-        inertia_origin_xyz="0.0397291414278933 -0.012662394123331089 0.0007929187272999183" 
+        inertia_origin_xyz="0.0397291414278933 -0.012662394123331089 0.0007929187272999183"
         inertia_origin_rpy="0 0 0"
         mass="0.8319811655030993"
-        ixx="0.000732" ixy="-1.2e-05" ixz="5e-06" 
+        ixx="0.000732" ixy="-1.2e-05" ixz="5e-06"
         iyy="0.000958" iyz="-5e-06" izz="0.000907"
     />
 
@@ -75,10 +77,10 @@
         name="Link_6_1"
         origin_xyz="-0.000193 0.313762 -0.570316" origin_rpy="0 0 0"
         material_name="white"
-        inertia_origin_xyz="6.567e-08 -0.00304 -3.032e-07" 
+        inertia_origin_xyz="6.567e-08 -0.00304 -3.032e-07"
         inertia_origin_rpy="0 0 0"
         mass="0.10343478090890781"
-        ixx="5.2e-05" ixy="-0.0" ixz="0.0" 
+        ixx="5.2e-05" ixy="-0.0" ixz="0.0"
         iyy="0.000103" iyz="0.0" izz="5.2e-05"
     />
 
@@ -93,7 +95,9 @@
         parent="base_link" child="Link_1_1"
         origin_xyz="0.0 0.000529 0.111" origin_rpy="0 0 0"
         axis_xyz="0 0 1"
-        limit_u="${2*pi}" limit_l="${-2*pi}" limit_e="100.0" limit_v="100.0"
+        limit_u="${2*pi}" limit_l="${-2*pi}" limit_e="100.0"
+        limit_v="${joint_limits['X_joint']['max_velocity']}"
+        limit_a="${joint_limits['X_joint']['max_acceleration']}"
     />
 
     <xacro:arctos_joint
@@ -101,7 +105,9 @@
         parent="Link_1_1" child="Link_2_1"
         origin_xyz="-0.05713 -0.020885 0.178378" origin_rpy="0 0 0"
         axis_xyz="1 0 0"
-        limit_u="${2*pi}" limit_l="${-2*pi}" limit_e="100.0" limit_v="100.0"
+        limit_u="${2*pi}" limit_l="${-2*pi}" limit_e="100.0"
+        limit_v="${joint_limits['Y_joint']['max_velocity']}"
+        limit_a="${joint_limits['Y_joint']['max_acceleration']}"
     />
 
     <xacro:arctos_joint
@@ -109,7 +115,9 @@
         parent="Link_2_1" child="Link_3_1"
         origin_xyz="0.10013 0.001311 0.261007" origin_rpy="0 0 0"
         axis_xyz="-1 0 0"
-        limit_u="${pi}" limit_l="${-pi}" limit_e="100.0" limit_v="100.0"
+        limit_u="${pi}" limit_l="${-pi}" limit_e="100.0"
+        limit_v="${joint_limits['Z_joint']['max_velocity']}"
+        limit_a="${joint_limits['Z_joint']['max_acceleration']}"
     />
 
     <xacro:arctos_joint
@@ -117,7 +125,9 @@
         parent="Link_3_1" child="Link_4_1"
         origin_xyz="-0.042999 -0.139695 0.021705" origin_rpy="0 0 0"
         axis_xyz="0 1 0"
-        limit_u="${2*pi}" limit_l="${-2*pi}" limit_e="100.0" limit_v="100.0"
+        limit_u="${2*pi}" limit_l="${-2*pi}" limit_e="100.0"
+        limit_v="${joint_limits['A_joint']['max_velocity']}"
+        limit_a="${joint_limits['A_joint']['max_acceleration']}"
     />
 
     <xacro:arctos_joint
@@ -125,7 +135,9 @@
         parent="Link_4_1" child="Link_5_1"
         origin_xyz="-0.039012 -0.121187 -0.001774" origin_rpy="0 0 0"
         axis_xyz="-1 0 0"
-        limit_u="${2*pi}" limit_l="${-2*pi}" limit_e="100.0" limit_v="100.0"
+        limit_u="${2*pi}" limit_l="${-2*pi}" limit_e="100.0"
+        limit_v="${joint_limits['B_joint']['max_velocity']}"
+        limit_a="${joint_limits['B_joint']['max_acceleration']}"
     />
 
     <xacro:arctos_joint
@@ -133,7 +145,9 @@
         parent="Link_5_1" child="Link_6_1"
         origin_xyz="0.039204 -0.033835 0.0" origin_rpy="0 0 0"
         axis_xyz="0 1 0"
-        limit_u="${2*pi}" limit_l="${-2*pi}" limit_e="100.0" limit_v="100.0"
+        limit_u="${2*pi}" limit_l="${-2*pi}" limit_e="100.0"
+        limit_v="${joint_limits['C_joint']['max_velocity']}"
+        limit_a="${joint_limits['C_joint']['max_acceleration']}"
     />
 
 </robot>

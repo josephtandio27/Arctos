@@ -7,6 +7,7 @@
   <xacro:arg name="feed_rate" default="800" />
   <xacro:arg name="abs_motion" default="true" />
   <xacro:arg name="initial_positions_file" default="$(find arctos_description)/config/initial_positions.yaml" />
+  <xacro:arg name="joint_limits_file" default="$(find arctos_description)/config/joint_limits.yaml" />
 
   <xacro:include filename="$(find arctos_description)/urdf/materials.xacro" />
   <xacro:include filename="$(find arctos_description)/urdf/joint_link.xacro" />
