@@ -8,7 +8,7 @@ controller_manager:
 
 
     arctos_gripper_controller:
-      type: parallel_gripper_action_controller/GripperActionController
+      type: position_controllers/GripperActionController
 
 
     joint_state_broadcaster:
@@ -42,7 +42,7 @@ arctos_arm_controller:
     
 arctos_gripper_controller:
   ros__parameters:
-    type: parallel_gripper_action_controller/GripperActionController
+    type: position_controllers/GripperActionController
     command_interfaces:
       - position
     state_interfaces:

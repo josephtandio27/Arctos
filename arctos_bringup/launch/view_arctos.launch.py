@@ -11,7 +11,7 @@ def generate_launch_description():
     # Declare arguments
     declared_arguments = []
     declared_arguments.append(DeclareLaunchArgument("use_gazebo", default_value="false"))
-    declared_arguments.append(DeclareLaunchArgument("port_name", default_value="/dev/ttyUSB0"))
+    declared_arguments.append(DeclareLaunchArgument("port_name", default_value="/dev/ttyACM0"))
     declared_arguments.append(DeclareLaunchArgument("baud_rate", default_value="115200"))
     declared_arguments.append(DeclareLaunchArgument("feed_rate", default_value="800"))
     declared_arguments.append(DeclareLaunchArgument("abs_motion", default_value="true"))

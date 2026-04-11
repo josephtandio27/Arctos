@@ -9,7 +9,7 @@ controller_manager:
       type: joint_trajectory_controller/JointTrajectoryController
 
     arctos_gripper_controller:
-      type: parallel_gripper_action_controller/GripperActionController
+      type: position_controllers/GripperActionController
 
 arctos_arm_controller:
   ros__parameters:    
@@ -42,7 +42,7 @@ arctos_arm_controller:
 
 arctos_gripper_controller:
   ros__parameters:
-    type: parallel_gripper_action_controller/GripperActionController
+    type: position_controllers/GripperActionController
     command_interfaces:
       - position
     state_interfaces:
