@@ -36,7 +36,10 @@ namespace arctos_control
         }
 
         // Read coordinate mode
-        if (params.hardware_info.hardware_parameters.at("abs_motion") == "true")
+        std::string abs_motion_param = params.hardware_info.hardware_parameters.at("abs_motion");
+        std::string lower_abs = abs_motion_param;
+        std::transform(lower_abs.begin(), lower_abs.end(), lower_abs.begin(), ::tolower);
+        if (lower_abs == "true" || lower_abs == "1")
         {
             motion_type_gcode_ = "G90";
         }
