@@ -100,6 +100,14 @@ namespace arctos_control
             arduino_ready_.store(true);
             async_read_ok();
 
+            // Set current axes as zero
+            std::lock_guard<std::mutex> lock(serial_mutex_);
+            if (serial_port_ && serial_port_->is_open())
+            {
+                std::string reset_cmd = "G92 X0.0 Y0.0 Z0.0 A0.0 B0.0 C0.0\n";
+                boost::asio::write(*serial_port_, boost::asio::buffer(reset_cmd));
+            }
+
             RCLCPP_INFO(rclcpp::get_logger("ArctosHardware"), "Arctos Connected!");
         }
         catch (const std::exception &e)
