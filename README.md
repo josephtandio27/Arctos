@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Open-loop arctos robotic arm using Moveit 2 with serial communication to Arduino Mega. Wiring follows the official guide
+Open-loop arctos robotic arm using Moveit 2 with serial communication to Arduino Mega. Wiring follows the official guide, but without hall effect sensors.
 
 This project contains the ROS 2 packages for the Arctos robotic system, including:
 - **arctos_bringup**: Launch files and configuration for bringing up the robot system
