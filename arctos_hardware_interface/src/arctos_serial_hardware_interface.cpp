@@ -350,6 +350,7 @@ namespace arctos_control
 
         // Send Raw GRBL Commands ($xx=val and any G-code)):
         // ros2 topic pub --once /send_grbl_command std_msgs/msg/String "{data: '$110=500'}"
+        // ($SLP) to sleep and disable motors
         grbl_config_sub_ = node_->create_subscription<std_msgs::msg::String>(
             "send_grbl_command", 10,
             [this](const std_msgs::msg::String::SharedPtr msg)
