@@ -1,7 +1,51 @@
 # ros2_arctos
-Reference: https://github.com/cr0Kz/ros2_arctos/tree/feature/motor_driver
 
-Open-loop arctos robotic arm
+## Project Overview
+
+Open-loop arctos robotic arm using Moveit 2 with serial communication to Arduino Mega. Wiring follows the official guide
+
+This project contains the ROS 2 packages for the Arctos robotic system, including:
+- **arctos_bringup**: Launch files and configuration for bringing up the robot system
+- **arctos_description**: URDF/XACRO files describing the robot's physical structure
+- **arctos_hardware_interface**: Hardware interface components for communicating with robot hardware
+- **arctos_moveit_config**: MoveIt 2 configuration for motion planning and control
+
+## Getting Started
+
+### Prerequisites
+
+- ROS 2 Jazzy
+- Colcon build system
+- Required dependencies (see package.xml)
+
+### Installation
+
+1. Clone this repository into your ROS 2 workspace:
+   ```bash
+   git clone <repository-url> src/Arctos
+   ```
+
+2. Build the workspace:
+   ```bash
+   colcon build
+   ```
+
+3. Source the setup files:
+   ```bash
+   source install/setup.bash
+   ```
+
+### Usage
+
+Refer to individual package documentation for specific usage instructions:
+- See `arctos_bringup` for launching the robot system
+- See `arctos_description` for robot model information
+- See `arctos_hardware_interface` for hardware integration details
+- See `arctos_moveit_config` for motion planning configuration
+
+Reference: 
+- https://github.com/cr0Kz/ros2_arctos/tree/feature/motor_driver
+- https://arctosrobotics.com/docs/#wiring
 
 ### Moving the robot with topic
 ros2 topic pub --once /arctos_arm_controller/joint_trajectory trajectory_msgs/msg/JointTrajectory "{joint_names: ['X_joint', 'Y_joint', 'Z_joint', 'A_joint', 'B_joint', 'C_joint'], points: [{positions: [0.0, -0.3, 0.264, -0.296, 0.389, 0.1], time_from_start: {sec: 3, nanosec: 0}}]}"
