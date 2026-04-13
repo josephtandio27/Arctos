@@ -81,6 +81,14 @@ namespace arctos_control
             // Initialize Subscribers here
             setup_subscribers();
 
+            // Disable motors using sleep command
+            std::lock_guard<std::mutex> lock(serial_mutex_);
+            if (serial_port_ && serial_port_->is_open())
+            {
+                std::string sleep_cmd = "$SLP\n";
+                boost::asio::write(*serial_port_, boost::asio::buffer(sleep_cmd));
+            }
+
             RCLCPP_INFO(node_->get_logger(), "Serial port opened and background thread started.");
         }
         catch (const std::exception &e)
