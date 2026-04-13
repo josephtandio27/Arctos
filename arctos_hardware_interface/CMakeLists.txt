@@ -51,11 +51,6 @@ install(TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION bin
 )
 
-# Install launch files
-install(DIRECTORY launch/
-  DESTINATION share/${PROJECT_NAME}/launch
-)
-
 # Install config files
 install(DIRECTORY config/
   DESTINATION share/${PROJECT_NAME}/config
