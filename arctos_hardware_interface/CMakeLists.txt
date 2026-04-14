@@ -21,8 +21,6 @@ include_directories(
 
 # Build library
 add_library(${PROJECT_NAME} SHARED
-  src/arctos_hardware_interface.cpp
-  src/ServoManager.cpp
   src/arctos_serial_hardware_interface.cpp
 )
 

@@ -81,12 +81,23 @@ namespace arctos_control
             // Initialize Subscribers here
             setup_subscribers();
 
-            // Disable motors using sleep command
+            // Reset every joint to zero
             std::lock_guard<std::mutex> lock(serial_mutex_);
             if (serial_port_ && serial_port_->is_open())
             {
-                std::string sleep_cmd = "$SLP\n";
-                boost::asio::write(*serial_port_, boost::asio::buffer(sleep_cmd));
+                std::string reset_cmd = "G92 X0.0 Y0.0 Z0.0 A0.0 B0.0 C0.0\n";
+                boost::asio::write(*serial_port_, boost::asio::buffer(reset_cmd));
+
+                // Consumes the token so the while loop actually has to wait for a new 'ok'
+                arduino_ready_.store(false);
+
+                int timeout = 0;
+                while (!arduino_ready_.load() && timeout < 20)
+                {
+                    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                    RCLCPP_INFO(node_->get_logger(), "Waiting for Arduino to acknowledge activation...");
+                    timeout++;
+                }
             }
 
             RCLCPP_INFO(node_->get_logger(), "Serial port opened and background thread started.");
@@ -108,12 +119,24 @@ namespace arctos_control
             arduino_ready_.store(true);
             async_read_ok();
 
-            // Set current axes as zero
+            // Due to slow processing of the serial communication, need to send the reset command again.
+            // Without sending this command, the motors won't respond at all.
             std::lock_guard<std::mutex> lock(serial_mutex_);
             if (serial_port_ && serial_port_->is_open())
             {
                 std::string reset_cmd = "G92 X0.0 Y0.0 Z0.0 A0.0 B0.0 C0.0\n";
                 boost::asio::write(*serial_port_, boost::asio::buffer(reset_cmd));
+
+                // Consumes the token so the while loop actually has to wait for a new 'ok'
+                arduino_ready_.store(false);
+
+                int timeout = 0;
+                while (!arduino_ready_.load() && timeout < 20)
+                {
+                    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                    RCLCPP_INFO(node_->get_logger(), "Waiting for Arduino to acknowledge activation...");
+                    timeout++;
+                }
             }
 
             RCLCPP_INFO(rclcpp::get_logger("ArctosHardware"), "Arctos Connected!");
@@ -240,7 +263,7 @@ namespace arctos_control
         return command_interfaces;
     }
 
-    hardware_interface::return_type ArctosSerialHardwareInterface::read(const rclcpp::Time & /*time*/, const rclcpp::Duration & period)
+    hardware_interface::return_type ArctosSerialHardwareInterface::read(const rclcpp::Time & /*time*/, const rclcpp::Duration &period)
     {
         double dt = period.seconds();
         // OPEN LOOP: Since we have no encoders, we assume the robot reached the command.
@@ -314,6 +337,8 @@ namespace arctos_control
                                              arduino_ready_ = true;
                                          }
                                      });
+
+            RCLCPP_INFO(node_->get_logger(), "Joint 0 (X) Command: %f, State: %f", hw_commands_[0], hw_states_[0]);
         }
 
         return hardware_interface::return_type::OK;
