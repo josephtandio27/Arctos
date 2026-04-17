@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Open-loop arctos robotic arm using Moveit 2 with serial communication to Arduino Mega. Wiring follows the official guide, but without hall effect sensors.
+Open-loop arctos robotic arm using Moveit 2 with serial communication to Arduino Mega. Wiring follows the official guide, but without hall effect sensors. Make sure to change the port_name in view.arctos.launch.py or in arctos.xacro (for demo.launch.py). The initial position of the robot is defined as in the CAD file, so make sure to position the robot in the same way before running either view.arctos.launch.py or demo.launch.py.
 
 This project contains the ROS 2 packages for the Arctos robotic system, including:
 - **arctos_bringup**: Launch files and configuration for bringing up the robot system
