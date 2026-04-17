@@ -2,9 +2,9 @@
 <robot name="arctos" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:arg name="use_gazebo" default="false" />
-  <xacro:arg name="port_name" default="/dev/ttyUSB0" />
+  <xacro:arg name="port_name" default="/dev/ttyACM0" />
   <xacro:arg name="baud_rate" default="115200" />
-  <xacro:arg name="feed_rate" default="800" />
+  <xacro:arg name="feed_rate" default="200" />
   <xacro:arg name="abs_motion" default="true" />
   <xacro:arg name="initial_positions_file" default="$(find arctos_description)/config/initial_positions.yaml" />
   <xacro:arg name="joint_limits_file" default="$(find arctos_description)/config/joint_limits.yaml" />
