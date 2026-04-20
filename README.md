@@ -1,7 +1,7 @@
 # ros2_arctos
 
 ## Project Overview
-![Demo Screencast](Video/screencast.gif)
+![Demo Screencast](Video/Screencast from 2026-04-20 14-34-31.gif)
 
 Open-loop arctos robotic arm using Moveit 2 with serial communication to Arduino Mega. Wiring follows the official guide, but without hall effect sensors. Make sure to change the port_name in view.arctos.launch.py or in arctos.xacro (for demo.launch.py). The initial position of the robot is defined as in the CAD file, so make sure to position the robot in the same way before running either view.arctos.launch.py or demo.launch.py. To change the speed and send GRBL command, publish to topic /set_feed_rate and /send_grbl_command, respectively.
 
